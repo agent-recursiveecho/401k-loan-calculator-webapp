@@ -8,6 +8,44 @@
 <link rel="stylesheet" href="/src/styles/main.css">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 </head>
+
+
+<!-- ========================================================
+     SCENARIO MANAGEMENT TOOLBAR
+     ========================================================
+
+     Displays whether the calculator uses default or
+     customized financial assumptions.
+
+     The reset button restores the original values.
+     JavaScript event handling is defined in src/app.js.
+-->
+
+<section class="panel" aria-label="Scenario management">
+  <div class="scenario-toolbar">
+    <div>
+      <h2>Current Scenario</h2>
+
+      <p
+        id="scenarioStatus"
+        class="scenario-status"
+        role="status"
+        aria-live="polite"
+      >
+        Loading scenario...
+      </p>
+    </div>
+
+    <button
+      type="button"
+      id="resetScenario"
+    >
+      Reset to Defaults
+    </button>
+  </div>
+</section>
+
+
 <body><div class="shell"><header><h1>401(k) Loan & Cash-Flow Planner</h1><p>Explore how a one-time loan-funded rent payment interacts with payroll contributions, employer matching, repayments, and monthly cash flow.</p></header>
 <section class="panel"><h2>1. Income, rent, and timing</h2><div class="fields">
 <label>401(k)-eligible gross pay / paycheck ($)<input id="gross" type="number" min="0" step=".01" value="1323"></label>

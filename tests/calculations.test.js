@@ -6,6 +6,11 @@ import {amortizeLoan} from '../src/calculators/loanAmortization.js';
 import {runningCashFlow} from '../src/calculators/cashFlow.js';
 import {paydays,contributionEffective} from '../src/calculators/payrollSchedule.js';
 import {parseDate} from '../src/utils/dates.js';
+import {
+  defaultScenario,
+  inputIds,
+  isDefaultScenario
+} from '../src/data/defaultScenario.js';
 
 test('1:2 allocation at 3% and 6%',()=>assert.deepEqual(employeeContribution(1323,3,6),{preTax:39.69,roth:79.38,total:119.07}));
 test('match capped at 6%',()=>{assert.equal(employerMatch(1323,9,6,100),79.38);assert.equal(employerMatch(1323,3,6,100),39.69);});
@@ -118,4 +123,34 @@ test('contribution timing rejects negative delays', () => {
     ),
     RangeError
   );
+});
+
+
+test('default scenario contains all required input values', () => {
+  assert.equal(inputIds.length, 23);
+
+  for (const id of inputIds) {
+    assert.equal(
+      Object.hasOwn(defaultScenario, id),
+      true,
+      `Missing default value: ${id}`
+    );
+  }
+});
+
+test('default scenario is correctly identified', () => {
+  const values = { ...defaultScenario };
+
+  assert.equal(isDefaultScenario(values), true);
+});
+
+test('modified or incomplete scenarios are not defaults', () => {
+  const customized = {
+    ...defaultScenario,
+    loan: 5000
+  };
+
+  assert.equal(isDefaultScenario(customized), false);
+  assert.equal(isDefaultScenario({}), false);
+  assert.equal(isDefaultScenario(null), false);
 });
