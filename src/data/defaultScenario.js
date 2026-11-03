@@ -1,0 +1,1 @@
+export const inputIds=['gross','takehome','rent','rentDay','payday','disbursement','delay','expenses','opening','oldPre','oldRoth','newPre','newRoth','matchCap','matchRatio','taxRate','loan','fee','apr','count','repayment','loanRent','proceeds'];

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>401(k) Loan & Cash-Flow Planner</title>
+<meta name="description" content="Explore 401(k) loans, contributions, employer matching, and cash flow with editable assumptions.">
+
+<link rel="stylesheet" href="/src/styles/main.css">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+<body><div class="shell"><header><h1>401(k) Loan & Cash-Flow Planner</h1><p>Explore how a one-time loan-funded rent payment interacts with payroll contributions, employer matching, repayments, and monthly cash flow.</p></header>
+<section class="panel"><h2>1. Income, rent, and timing</h2><div class="fields">
+<label>401(k)-eligible gross pay / paycheck ($)<input id="gross" type="number" min="0" step=".01" value="1323"></label>
+<label>Current take-home pay / paycheck ($)<input id="takehome" type="number" min="0" step=".01" value="1000"><small>Approximate deposit under current elections</small></label>
+<label>Monthly rent ($)<input id="rent" type="number" min="0" step=".01" value="1540"></label>
+<label>Rent due day<input id="rentDay" type="number" min="1" max="28" step="1" value="22"></label>
+<label>First future payday<input id="payday" type="date" value="2026-11-19"></label>
+<label>Loan received on<input id="disbursement" type="date" value="2026-11-18"><small>Editable illustrative date; verify with provider</small></label>
+<label>Paychecks until percentage change applies<input id="delay" type="number" min="0" max="26" step="1" value="1"><small>0 = first payday on/after disbursement</small></label>
+<label>Other monthly expenses ($)<input id="expenses" type="number" min="0" step=".01" value="0"><small>Enter other expenses for meaningful cash-flow estimates</small></label>
+<label>Opening checking balance ($)<input id="opening" type="number" step=".01" value="0"><small>Excludes loan proceeds until disbursement</small></label>
+</div></section>
+<section class="panel"><h2>2. Contributions and taxes</h2><div class="fields">
+<label>Current pre-tax rate (%)<input id="oldPre" type="number" min="0" max="100" step="1" value="1"></label>
+<label>Current Roth rate (%)<input id="oldRoth" type="number" min="0" max="100" step="1" value="2"></label>
+<label>New pre-tax rate (%)<input id="newPre" type="number" min="0" max="100" step="1" value="3"></label>
+<label>New Roth rate (%)<input id="newRoth" type="number" min="0" max="100" step="1" value="6"></label>
+<label>Maximum employee rate eligible for match (%)<input id="matchCap" type="number" min="0" max="100" step=".1" value="6"></label>
+<label>Employer match per eligible dollar (%)<input id="matchRatio" type="number" min="0" max="100" step="1" value="100"></label>
+<label>Estimated marginal income tax saving on added pre-tax deferral (%)<input id="taxRate" type="number" min="0" max="60" step=".5" value="0"><small>0% default: conservative cash-flow assumption; excludes payroll-tax changes</small></label>
+</div><p class="muted">Percentages apply to eligible gross pay, not take-home pay. Employer match is estimated assuming the plan counts combined pre-tax and Roth employee deferrals.</p></section>
+<section class="panel"><h2>3. Loan terms</h2><div class="fields">
+<label>Requested loan proceeds ($)<input id="loan" type="number" min="0" step=".01" value="2205"></label>
+<label>Financed fee ($)<input id="fee" type="number" min="0" step=".01" value="50"></label>
+<label>APR (%)<input id="apr" type="number" min="0" max="100" step=".01" value="8"></label>
+<label>Number of biweekly repayments<input id="count" type="number" min="1" max="260" step="1" value="26"></label>
+<label>First repayment date<input id="repayment" type="date" value="2026-11-18"></label>
+<label>Rent paid from loan ($)<input id="loanRent" type="number" min="0" step=".01" value="1540"></label>
+<label>Loan cash available to borrower ($)<input id="proceeds" type="number" min="0" step=".01" value="2205"><small>Separate from financed principal: confirm actual disbursement</small></label>
+</div></section>
+<section class="panel"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><h2>4. Results</h2><button type="button" id="download">Export calendar CSV</button></div><div class="cards" id="metrics" aria-live="polite"></div><div class="note" id="messages"></div></section>
+<section class="split"><div class="panel"><h2>Contribution comparison (per typical paycheck)</h2><div class="table-wrap"><table id="compare"></table></div><p class="muted">Take-home estimates are changes from the entered current deposit, including marginal income-tax savings on additional pre-tax contributions. Actual withholding may differ.</p></div><div class="panel"><h2>Loan amortization</h2><div class="table-wrap"><table id="amort"></table></div></div></section>
+<section class="panel"><h2>5. Combined event calendar (26 paychecks)</h2><p class="muted">Events are ordered by actual dates, including the 22nd-of-month rent due date, loan disbursement, deductions, and deposits. A negative running balance signals a cash-flow shortfall under the assumptions. Events occurring on the same day are simulated in a fixed sequence; actual bank availability may differ. For same-day events, loan disbursement precedes rent and payroll.</p><div class="table-wrap"><table id="calendar"></table></div></section>
+<section class="panel foot"><h2>Model assumptions and limitations</h2><p>The 26-paycheck projection is not necessarily the same as a 26-payment loan period. The calculator treats a financed fee as part of amortized principal, uses a nominal annual rate divided by 26, rounds loan payments to cents, and adjusts the final installment. The employer may calculate loan interest daily or differently. Loan proceeds are counted once as cash inflow and a loan-funded rent payment is still a cash expense; there is no duplicate “freed cash” added to income. This model does not include investment performance, future pay changes, benefit changes, other taxes, early loan repayment, true-up rules, annual IRS contribution limits, or an assumption that the employer matches above the stated cap. The net paycheck estimate assumes additional pre-tax contributions reduce income tax withholding at the user-entered marginal rate; Roth contributions do not. Verify all loan terms, payroll cutoffs, eligibility, and applicable tax rules with the plan administrator. This is an educational planning tool, not financial or tax advice.</p></section></div>
+<script type="module" src="/src/main.js"></script></body></html>
