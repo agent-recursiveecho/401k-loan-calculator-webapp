@@ -60,3 +60,62 @@ test('cash flow identifies negative balances', () => {
   assert.equal(result.minimum, -540);
   assert.equal(result.hasShortfall, true);
 });
+
+test('contribution delay follows a later disbursement', () => {
+  const firstPayday = parseDate('2026-11-19');
+  const disbursement = parseDate('2026-11-20');
+
+  assert.equal(
+    contributionEffective(
+      parseDate('2026-12-03'),
+      disbursement,
+      firstPayday,
+      1
+    ),
+    false
+  );
+
+  assert.equal(
+    contributionEffective(
+      parseDate('2026-12-17'),
+      disbursement,
+      firstPayday,
+      1
+    ),
+    true
+  );
+});
+
+test('contribution changes can begin without delay', () => {
+  const firstPayday = parseDate('2026-11-19');
+  const disbursement = parseDate('2026-11-18');
+
+  assert.equal(
+    contributionEffective(
+      firstPayday,
+      disbursement,
+      firstPayday,
+      0
+    ),
+    true
+  );
+});
+
+test('paydays rejects invalid paycheck counts', () => {
+  assert.throws(
+    () => paydays(parseDate('2026-11-19'), -1),
+    RangeError
+  );
+});
+
+test('contribution timing rejects negative delays', () => {
+  assert.throws(
+    () => contributionEffective(
+      parseDate('2026-11-19'),
+      parseDate('2026-11-18'),
+      parseDate('2026-11-19'),
+      -1
+    ),
+    RangeError
+  );
+});
