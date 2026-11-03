@@ -14,3 +14,49 @@ test('26 loan payments end with zero balance',()=>{const a=amortizeLoan({princip
 test('zero interest loan',()=>{const a=amortizeLoan({principal:100,aprPercent:0,payments:4,firstDate:parseDate('2026-11-18')});assert.equal(a.totalInterest,0);assert.equal(a.totalPaid,100);});
 test('biweekly paydays and delayed activation',()=>{const first=parseDate('2026-11-19'),dates=paydays(first);assert.equal(dates.length,26);assert.equal(dates[1].getDate(),3);assert.equal(contributionEffective(dates[0],parseDate('2026-11-18'),first,1),false);assert.equal(contributionEffective(dates[1],parseDate('2026-11-18'),first,1),true);});
 test('cash flow sorted with negative balance warning threshold',()=>{const d=parseDate('2026-11-19');const s=runningCashFlow([{date:d,delta:-1540,priority:2},{date:d,delta:1000,priority:1}],0);assert.equal(s.endingBalance,-540);assert.equal(s.minimum,-540);});
+
+test('cash flow rejects invalid transaction amounts', () => {
+  const date = parseDate('2026-11-19');
+
+  assert.throws(
+    () => runningCashFlow([
+      { date, delta: Number.NaN, priority: 1 }
+    ], 0),
+    TypeError
+  );
+});
+
+test('cash flow rejects invalid transaction dates', () => {
+  assert.throws(
+    () => runningCashFlow([
+      { date: new Date('invalid'), delta: 100, priority: 1 }
+    ], 0),
+    TypeError
+  );
+});
+
+test('cash flow preserves same-day transaction order', () => {
+  const date = parseDate('2026-11-19');
+
+  const result = runningCashFlow([
+    { date, delta: 100, priority: 1, label: 'First' },
+    { date, delta: 200, priority: 1, label: 'Second' }
+  ], 0);
+
+  assert.equal(result.events[0].label, 'First');
+  assert.equal(result.events[1].label, 'Second');
+  assert.equal(result.endingBalance, 300);
+});
+
+test('cash flow identifies negative balances', () => {
+  const date = parseDate('2026-11-19');
+
+  const result = runningCashFlow([
+    { date, delta: 1000, priority: 1 },
+    { date, delta: -1540, priority: 2 }
+  ], 0);
+
+  assert.equal(result.endingBalance, -540);
+  assert.equal(result.minimum, -540);
+  assert.equal(result.hasShortfall, true);
+});
